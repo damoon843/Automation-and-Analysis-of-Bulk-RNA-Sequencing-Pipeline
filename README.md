@@ -4,7 +4,7 @@ As a recipient of the Karen T. Romer Undergraduate Teaching and Research Award, 
 
 # Table of contents
 
-- [Project Title](#project-title)
+- [Project Introduction](#Automation-and-Analysis-of-Bulk-RNA-Sequencing-Pipeline)
 - [Demo-Preview](#demo-preview)
 - [Table of contents](#table-of-contents)
 - [Installation](#installation)
