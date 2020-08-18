@@ -1,6 +1,6 @@
 # Automation and Analysis of Bulk RNA-Sequencing Pipeline 
 
-As a recipient of the Karen T. Romer Undergraduate Teaching and Research Award, I had the opportunity to spend the last 10 weeks collaborating on a research project focusing on analyzing and automating a bulk RNA-sequencing pipeline with [my laboratory](https://ocglab.org/). The published abstract and poster can be found on the Brown Digital Repository [here](https://repository.library.brown.edu/studio/item/bdr:1139275/). 
+As a recipient of the Karen T. Romer Undergraduate Teaching and Research Award, I had the opportunity to spend the last 10 weeks collaborating on a research project focusing on analyzing and automating a bulk RNA-sequencing pipeline with [my laboratory](https://ocglab.org/). The published abstract and poster with my findings can be found on the Brown Digital Repository [here](https://repository.library.brown.edu/studio/item/bdr:1139275/). 
 
 # Table of contents
 
