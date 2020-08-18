@@ -33,7 +33,5 @@ More functions can be added to the Python script for the Streamlit web-app. One 
 # License
 [(Back to top)](#table-of-contents)
 
-
-
-[GNU General Public License version 3](https://opensource.org/licenses/GPL-3.0)
+[MIT License](https://opensource.org/licenses/MIT)
 
