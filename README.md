@@ -7,6 +7,7 @@ As a recipient of the Karen T. Romer Undergraduate Teaching and Research Award, 
 - [Project Introduction](#Automation-and-Analysis-of-Bulk-RNA-Sequencing-Pipeline)
 - [Set-up](#Set-up)
 - [Usage](#Batch-Script-Usage)
+- [Pipeline and Web-app Assessment](#Pipeline-and-Web-app-Assessment)
 - [Contribute](#Contributions-and-Future-Directions)
 - [License](#license)
 - [Footer](#footer)
@@ -21,7 +22,14 @@ The Python script to compare differentially expressed genes (DEGs) from any sour
 # Batch Script Usage
 [(Back to top)](#table-of-contents)
 
-The batch scripts are meant to be easily adaptable, with various parameters that can be changed at each step of the pipeline. It is important to note that the batch scripts are completed through the expression estimation step. The last step (differential expression) involves an easily-adaptable R script that can be found [here](https://rnabio.org/module-03-expression/0003/03/01/Differential_Expression/) from the Griffith Lab at Washington University.
+The batch scripts are meant to be easily adaptable, with various parameters that can be changed at each step of the pipeline. It is important to note that the batch scripts are completed through the expression estimation step. The last step (differential expression) involves an easily-adaptable R script that can be found [here](https://rnabio.org/module-03-expression/0003/03/01/Differential_Expression/) from the Griffith Lab at Washington University.  
+
+# Pipeline and Web-app Assessment
+[(Back to top)](#table-of-contents)  
+
+To assess the quality of my pipeline, I compared my differential gene expression results in two CRISPR knockout strains (CRISPR8500 and CRISPR42261) vs. a wild-type strain (w1118) to those reported by Genewiz. The comparative analysis of log2 fold changes, as well as data cleaning can be found in a jupyter notebook under the "Pipeline Analysis" section of this repository. The log2 fold change values for CRISPR8500 vs. w1118 and CRISPR42261 vs. w1118 (ran through my pipeline) can also be found there.
+
+To assess the function of my web-app, ~100 DEGs from an experiment profiling Drosophila genes regulated by high potassium to our candidates resulted in an accurate result of 23 genes in common with the lab's list of synaptic genes.
 
 # Contributions and Future Directions
 [(Back to top)](#table-of-contents)
