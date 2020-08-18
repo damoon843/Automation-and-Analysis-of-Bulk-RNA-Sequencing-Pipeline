@@ -1,0 +1,91 @@
+#!/bin/bash
+
+# This script is for alignment -> requires an interactive session
+#SBATCH --time=4:00:00
+
+#SBATCH -N 1
+#SBATCH -c 1
+#SBATCH -J MyJob
+
+#SBATCH -o MyJob-%j.out
+#SBATCH -e MyJob-%j.err
+
+module load hisat2
+module load samtools
+module load picard-tools
+
+mkdir $RNA_ALIGN_DIR
+cd $RNA_DATA_DIR/trimmed/
+
+# Echo input variables for hisat2 functions
+echo $STRAND
+echo $PL
+echo $NUM_REPS
+
+# Create a list of .fq files 
+fqlist=(*.fastq.gz)
+fqlist_len=${#fqlist[@]}
+
+# Set unique identifiers for each read group.
+declare -a id_array
+
+for (( index=0; index<$fqlist_len-1; index+=2 )); do
+	IFS='_'
+	read -r out <<< "${fqlist[index]}"
+	echo $out
+	
+	id_array+=( "${out}" )
+done
+
+id_array_len=${#id_array[@]}
+
+# Switch to the alignment directory
+cd $RNA_ALIGN_DIR
+
+
+# Use HISAT2 for graph-based alignment
+
+for (( index=0; index<$fqlist_len; index+=2 )); do
+	
+	hisat2 -p 8 --rg-id=${id_array[index]} --rg PL:$PL -x $RNA_REF_INDEX --dta --rna-strandness $STRAND -1 $RNA_DATA_DIR/trimmed/${fqlist[index]} -2 $RNA_DATA_DIR/trimmed/${fqlist[index+1]} -S ./"${id_array[index]}.sam"
+
+done
+
+# Convert hisat2 .sam files to .bam files and sort by aligned position
+for file in *.sam
+do
+	base="${file%.*}"
+	samtools sort -@ 8 -o "${base}.bam" file
+done
+
+# Make a single .bam file for each sample using picard-tools
+
+# Make a list of all of the .bam files in the alignment directory
+bamlist=(*.bam)
+samp_index=0
+
+# The number of reps per sample for input has been hard-coded for 2,3, or 4 replicates
+
+for (( index=0; index<${#bamlist[@]}-1; index+=$NUM_REPS )); do
+	
+	if [[ $NUM_REPS -eq 2 ]]
+	then
+		java -Xmx2g -jar $PICARD MergeSamFiles OUTPUT=${bamlist[index]} INPUT=${bamlist[index]} INPUT=${bamlist[index+1]}
+
+	elif [[ $NUM_REPS -eq 3 ]]
+	then
+		java -Xmx2g -jar $PICARD MergeSamFiles OUTPUT=${bamlist[index]}INPUT=${bamlist[index]} INPUT=${bamlist[index+1]} INPUT=$				{bamlist[index+2]}
+	
+	else 
+		java -Xmx2g -jar $PICARD MergeSamFiles OUTPUT=${bamlist[index]} INPUT=${bamlist[index]} INPUT=${bamlist[index+1]} INPUT=${bamlist[index+2]} INPUT=${bamlist[index+3]}
+	
+fi
+done
+
+
+
+
+
+
+
+

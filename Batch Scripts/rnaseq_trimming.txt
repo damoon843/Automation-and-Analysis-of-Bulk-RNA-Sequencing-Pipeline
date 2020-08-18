@@ -1,0 +1,51 @@
+#!/bin/bash
+
+# This script is for trimming -> requires an interactive session
+#SBATCH --time=4:00:00
+#SBATCH --mem=0
+#SBATCH -N 1
+#SBATCH -c 1
+#SBATCH -J MyJob
+
+#SBATCH -o MyJob-%j.out
+#SBATCH -e MyJob-%j.err
+
+module load bbtools
+
+# Create the trimmed directory.
+mkdir $RNA_DATA_TRIM_DIR
+
+
+# Make sure the reference file and input files are in the same directory
+
+cd $RNA_REFS_DIR
+cp $RNA_REF_FASTA $RNA_DATA_DIR
+
+cd $RNA_DATA_DIR
+
+# Overall goal: trim sequence adapters from samples with BBduk
+
+# Move the reference .fa file to the end of the directory
+FA_FILE=$(basename $RNA_REF_FASTA)
+mv $FA_FILE ZZZ$FA_FILE
+fqlist=(*.fastq.gz)
+echo $fqlist
+fqlist_len=${#fqlist[@]}
+
+# Print contents of the array.
+printf '%s\n' "${fqlist[@]}"
+
+# Loop through the array and perform trimming 
+for (( index=0; index<$fqlist_len-1; index+=2 )); do
+
+	bbduk.sh -Xmx10g in1=${fqlist[index]} in2=${fqlist[index+1]} out1=$RNA_DATA_TRIM_DIR/${fqlist[index]}.fastq.gz out2=$RNA_DATA_TRIM_DIR/${fqlist[index+1]}.fastq.gz ref=ZZZ$FA_FILE ktrim=$KTRIM k=$KSIZE mink=$MINK tpe tbo prealloc
+
+done
+
+
+
+
+
+
+
+

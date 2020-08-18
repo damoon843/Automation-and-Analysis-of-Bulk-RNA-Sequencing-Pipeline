@@ -1,0 +1,51 @@
+#!/bin/bash
+
+# This script is for evaluating alignment quality
+#SBATCH --time=1:00:00
+
+#SBATCH -N 1
+#SBATCH -c 1
+#SBATCH -J MyJob
+
+#SBATCH -o MyJob-%j.out
+#SBATCH -e MyJob-%j.err
+
+module load samtools
+module load fastqc
+module load multiqc 
+
+alias c='cd $RNA_ALIGN_DIR'
+c
+mkdir -p flagstat
+
+# Create basic summary of alignments with flagstat -> is this step needed?
+find *Rep*.bam -exec echo samtools flagstat {} \> flagstat/{}.flagstat \; | sh
+
+cd flagstat
+
+for file in {.*,*}; do cat file; done
+
+# Use FastQC to perform QC on .bam files
+c
+
+EXT=bam
+for file in *.${EXT}; do
+	fastqc file
+done
+
+mkdir fastqc
+mv *fastqc.html fastqc/
+mv *.fastqc.zip fastqc/
+
+# Maybe perform analysis w/ picard here?
+
+# Use multiqc to compile a QC report 
+multiqc ./
+
+
+
+
+
+
+
+

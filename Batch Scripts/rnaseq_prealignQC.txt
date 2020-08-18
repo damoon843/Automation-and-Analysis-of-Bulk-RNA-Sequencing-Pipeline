@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# This script is for prealignment QC
+#SBATCH --time=2:00:00
+
+#SBATCH -N 1
+#SBATCH -c 1
+#SBATCH -J MyJob
+
+#SBATCH -o MyJob-%j.out
+#SBATCH -e MyJob-%j.err
+
+module load fastqc 
+module load MultiQC
+
+cd $RNA_DATA_DIR
+
+
+# Run fastqc on the files 
+for file in *.fastq.gz; do
+	fastqc $file
+done 
+
+# Run multiqc on the files to generate single summary report
+multiqc . 
+

@@ -1,0 +1,54 @@
+# This script is for expression analysis
+#SBATCH --time=1:00:00
+
+#SBATCH -N 1
+#SBATCH -c 1
+#SBATCH -J MyJob
+
+#SBATCH -o MyJob-%j.out
+#SBATCH -e MyJob-%j.err
+
+module load stringtie
+module load r 
+
+# Make an array of all of the .bam files
+alias e='cd $RNA_ALIGN_DIR
+e
+
+bamlist=(*.bam)
+
+# Create directory for stringtie 
+alias c='cd $RNA_HOME'
+c
+
+mkdir -p expression/stringtie/ref_only/
+alias b='cd expression/stringtie/ref_only'
+b
+
+# Perform stringtie on .bam files
+for file in $bamlist; do
+	fbname=$(basename "$1" .bam)
+	
+	stringtie --rf -p 8 -G $RNA_REF_GTF -e -B -o $fbname/transcripts.gtf -A $fbname/	gene_abundances.tsv $RNA_ALIGN_DIR/file
+
+# Skipping htseq-count (raw counts) and just using FPKM/TPM values
+
+# Use ballgown to compare conditions 
+mkdir -p $RNA_HOME/de/ballgown/ref_only/
+alias n='cd $RNA_HOME/de/ballgown/ref_only/
+n
+
+# Create a .csv file with all expression files
+printf "\"ids\",\"type\",\"path\"\n\"UHR_Rep1\",\"UHR\",\"$RNA_HOME/expression/stringtie/ref_only/UHR_Rep1\"\n\"UHR_Rep2\",\"UHR\",\"$RNA_HOME/expression/stringtie/ref_only/UHR_Rep2\"\n\"UHR_Rep3\",\"UHR\",\"$RNA_HOME/expression/stringtie/ref_only/UHR_Rep3\"\n\"HBR_Rep1\",\"HBR\",\"$RNA_HOME/expression/stringtie/ref_only/HBR_Rep1\"\n\"HBR_Rep2\",\"HBR\",\"$RNA_HOME/expression/stringtie/ref_only/HBR_Rep2\"\n\"HBR_Rep3\",\"HBR\",\"$RNA_HOME/expression/stringtie/ref_only/HBR_Rep3\"\n" > UHR_vs_HBR.csv
+
+# Set argument passed into R file 
+printf "\n Please enter your conditions in the following format: CONDITION1_vs_CONDITION2_vs_CONDITION3"
+
+read -p "Enter conditions: " CONDITIONS
+R --vanilla -f DEscript.R --args comparison=$CONDITIONS
+
+
+
+
+
+

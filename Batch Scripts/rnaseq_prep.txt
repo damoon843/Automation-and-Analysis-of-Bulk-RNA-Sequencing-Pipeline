@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# This script is for data preparation and indexing
+#SBATCH --time=2:00:00
+
+#SBATCH -N 1
+#SBATCH -c 1
+#SBATCH -J RNAseq_prep
+#SBATCH --mem=0
+
+#SBATCH -o MyJob-%j.out
+#SBATCH -e MyJob-%j.err
+
+module load hisat2
+
+# cd into the RNA_REFS_DIR
+cd $RNA_REFS_DIR
+
+
+# Create a HISAT2 index for gene 
+hisat2_extract_splice_sites.py $RNA_REF_GTF > $RNA_REFS_DIR/splicesites.tsv
+hisat2_extract_exons.py $RNA_REF_GTF > $RNA_REFS_DIR/exons.tsv
+hisat2-build -p 8 --ss $RNA_REFS_DIR/splicesites.tsv --exon $RNA_REFS_DIR/exons.tsv $RNA_REF_FASTA $RNA_REF_INDEX
+
+
+
